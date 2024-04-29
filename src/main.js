@@ -73,6 +73,7 @@ async function fetchData(pageNumber = 1) {
                                             ... on Diablo4Season {
                                                 id
                                                 name
+                                                seasonMechanics
                                             }
                                         }
                                         class {
@@ -284,14 +285,14 @@ function prepareData(data) {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
     class: JSON.stringify(data.class),
-    tier: data.tier,
-    tags: build.tags,
+    tier: JSON.stringify(data.tier),
+    tags: JSON.stringify(build.tags),
     summary: build.buildSummary,
     core_skills: JSON.stringify(build?.variants[0]?.assignedSkills),
     selected_skills: JSON.stringify(build?.variants[0]?.skills),
     gear: prepareGear(build?.variants[0]?.gear),
     gems: prepareGems(build?.variants[0]?.gems),
-    seasonal_mechanic: data?.season?.seasonMechanics,
+    seasonal_mechanic: JSON.stringify(data?.season?.seasonMechanics),
     creator: prepareCreator(build.author),
     last_updated: build.updatedAt,
     leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
