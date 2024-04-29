@@ -283,7 +283,7 @@ function prepareData(data) {
   return {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
-    class: data.class,
+    class: JSON.stringify(data.class),
     tier: data.tier,
     tags: build.tags,
     summary: build.buildSummary,
@@ -292,7 +292,7 @@ function prepareData(data) {
     gear: prepareGear(build?.variants[0]?.gear),
     gems: prepareGems(build?.variants[0]?.gems),
     seasonal_mechanic: data?.season?.seasonMechanics,
-    creator: build.author,
+    creator: prepareCreator(build.author),
     last_updated: build.updatedAt,
     leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
     class_mechanic: prepareClassMechanic(build?.variants),
@@ -313,6 +313,12 @@ function prepareLevelingPath(data) {
   }
 
   return JSON.stringify(res);
+}
+
+function prepareCreator(data) {
+  const res = []
+
+  return JSON.stringify(data);
 }
 
 function prepareGear(data) {
