@@ -294,7 +294,7 @@ async function fetchData(pageNumber = 1) {
     const pageInfo = response?.data?.data?.diablo4?.game?.metaBuildVariants?.pageInfo;
 
     if (metaBuildVariants.length > 0) {
-      let data = metaBuildVariants.map(v => prepareData(v.build));
+      let data = metaBuildVariants.map(v => prepareData(v));
       allData.push(...data);
     }
 
@@ -304,30 +304,33 @@ async function fetchData(pageNumber = 1) {
       console.log(allData);
     }
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error);
   }
 }
 
-function prepareData(build) {
+function prepareData(data) {
+  let build = data.build
+
   return {
-    build_url: null,
+    build_url: data.id,
     build_name: build.name,
-    class: JSON.stringify(build.class),
-    tier: JSON.stringify(build.tier),
+    class: JSON.stringify(data.class),
+    tier: JSON.stringify(data.tier),
     tags: JSON.stringify(build.tags),
     summary: build.buildSummary,
     core_skills: JSON.stringify(build?.variants[0]?.assignedSkills),
-    str_and_weak: null,
     selected_skills: JSON.stringify(build?.variants[0]?.skills),
+    gear: JSON.stringify(build?.variants[0]?.gear),
+    gems: JSON.stringify(build?.variants[0]?.gems),
+    seasonal_mechanic: data?.season?.seasonMechanics,
+    creator: JSON.stringify(build.author),
+    last_updated: build.updatedAt,
+
+    str_and_weak: null,
     leveling_path: null,
     class_mechanic: null,
     skill_rotation: null,
-    gear: JSON.stringify(build?.variants[0]?.gear),
-    gems: JSON.stringify(build?.variants[0]?.gems),
-    seasonal_mechanic: build?.season?.seasonMechanics,
     paragon: null,
-    creator: JSON.stringify(build.author),
-    last_updated: build.updatedAt,
   };
 }
 
