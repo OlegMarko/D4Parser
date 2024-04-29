@@ -33,19 +33,15 @@ async function fetchData(pageNumber = 1) {
                                 tier {
                                     ... on Diablo4Tier {
                                         id
-                                        slug
                                         name
-                                        color
+                                        slug
                                     }
                                 }
                                 class {
                                     ... on Diablo4Class {
                                         id
-                                        slug
                                         name
-                                        str
-                                        iconUrl
-                                        backgroundImageUrl
+                                        slug
                                     }
                                 }
                                 season {
@@ -57,30 +53,25 @@ async function fetchData(pageNumber = 1) {
                                 }
                                 build {
                                     ... on Diablo4CustomBuildV3 {
+                                        id
                                         name
                                         class {
                                             ... on Diablo4Class {
                                                 id
                                                 slug
                                                 name
-                                                iconUrl
-                                                backgroundImageUrl
-                                                str
                                             }
                                         }
                                         tier {
                                             ... on Diablo4Tier {
                                                 id
                                                 name
-                                                color
                                                 slug
                                             }
                                         }
                                         season {
                                             ... on Diablo4Season {
                                                 id
-                                                seasonMechanics
-                                                startingAt
                                                 name
                                             }
                                         }
@@ -89,14 +80,11 @@ async function fetchData(pageNumber = 1) {
                                                 id
                                                 slug
                                                 name
-                                                iconUrl
-                                                backgroundImageUrl
                                             }
                                         }
                                         tags
                                         author {
                                             ... on Diablo4CustomAuthor {
-                                                id
                                                 name
                                                 links {
                                                     ... on Diablo4AuthorLink {
@@ -111,7 +99,6 @@ async function fetchData(pageNumber = 1) {
                                         variants {
                                             ... on Diablo4Variant {
                                                 name
-                                                description
                                                 assignedSkills {
                                                     ... on Diablo4AssignedSkill {
                                                         position
@@ -119,41 +106,7 @@ async function fetchData(pageNumber = 1) {
                                                             ... on Diablo4Skill {
                                                                 id
                                                                 name
-                                                                type {
-                                                                    ... on Diablo4SkillType {
-                                                                        id
-                                                                        slug
-                                                                        name
-                                                                    }
-                                                                }
-                                                                section {
-                                                                    ... on Diablo4SkillSection {
-                                                                        id
-                                                                        slug
-                                                                        name
-                                                                        skills {
-                                                                            ... on Diablo4Skill {
-                                                                                id
-                                                                                slug
-                                                                                sectionSlug
-                                                                                name
-                                                                                iconUrl
-                                                                                dependsOn {
-                                                                                    ... on Diablo4Skill {
-                                                                                        id
-                                                                                        slug
-                                                                                        name
-                                                                                    }
-                                                                                }
-                                                                                description
-                                                                                dependsOnSlugs
-                                                                            }
-                                                                        }
-                                                                        skillsSlugs
-                                                                        classSlug
-                                                                        iconUrl
-                                                                    }
-                                                                }
+                                                                slug
                                                             }
                                                         }
                                                     }
@@ -162,106 +115,113 @@ async function fetchData(pageNumber = 1) {
                                                     actionType
                                                     skill {
                                                         ... on Diablo4Skill {
-                                                            x
-                                                            y
-                                                            iconUrl
-                                                            dependsOnSlugs
                                                             id
                                                             name
-                                                            type {
-                                                                ... on Diablo4SkillType {
-                                                                    id
-                                                                    slug
-                                                                    name
-                                                                }
-                                                            }
-                                                            section {
-                                                                ... on Diablo4SkillSection {
-                                                                    id
-                                                                    slug
-                                                                    name
-                                                                    iconUrl
-                                                                    class {
-                                                                        ... on Diablo4Class {
-                                                                            id
-                                                                            slug
-                                                                            name
-                                                                            str
-                                                                            iconUrl
-                                                                            backgroundImageUrl
-                                                                        }
-                                                                    }
-                                                                    classSlug
-                                                                    index
-                                                                    requiredRank
-                                                                    x
-                                                                    y
-                                                                }
-                                                            }
+                                                            slug
+                                                            maxRank
                                                         }
                                                     }
                                                 }
                                                 gems {
                                                     ... on Diablo4BuildSlottedGem {
+                                                        slot {
+                                                            ... on Diablo4GemType {
+                                                                id
+                                                                name
+                                                                slug
+                                                            }
+                                                        }
                                                         gem {
                                                             ... on Diablo4Gem {
                                                                 id
                                                                 name
-                                                                iconUrl
-                                                                bonuses {
-                                                                    ... on Diablo4Bonus {
-                                                                        description
-                                                                        slot {
-                                                                            ... on Diablo4GemType {
-                                                                                id
-                                                                                slug
-                                                                                name
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
+                                                                slug
                                                             }
                                                         }
                                                     }
                                                 }
                                                 gear {
                                                     ... on Diablo4Gear {
+                                                        slot {
+                                                            ... on Diablo4BuildSlot {
+                                                                id
+                                                                name
+                                                                slug
+                                                            }
+                                                        }
+                                                        aspect {
+                                                            ... on Diablo4Aspect {
+                                                                id
+                                                                name
+                                                                slug
+                                                            }
+                                                        }
+                                                        stats {
+                                                            ... on Diablo4Stat {
+                                                                id
+                                                                name
+                                                                slug
+                                                            }
+                                                        }
                                                         item {
                                                             ... on Diablo4UniqueItem {
                                                                 id
+                                                                slug
                                                                 name
-                                                                iconUrl
-                                                                description
-                                                                type {
-                                                                    ... on Diablo4UniqueItemType {
-                                                                        id
-                                                                        slug
-                                                                        name
-                                                                    }
-                                                                }
-                                                                class {
-                                                                    ... on Diablo4Class {
-                                                                        id
-                                                                        slug
-                                                                        str
-                                                                        name
-                                                                        iconUrl
-                                                                        backgroundImageUrl
-                                                                    }
-                                                                }
-                                                                effect
-                                                                mainStats
-                                                                secondaryStats
                                                             }
                                                         }
                                                     }
                                                 }
-                                                assignedSkillsDescription
-                                                skillTreeDescription
-                                                gearStatsDescription
-                                                paragonBoardDescription
-                                                senechalConstructDescription
-                                                aspectsAndUniquesDescription
+                                                boons {
+                                                    ... on Diablo4DruidBoon {
+                                                        type
+                                                        value {
+                                                            ... on Diablo4Skill {
+                                                                id
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                summons {
+                                                    ... on Diablo4NecromancerSummon {
+                                                        type
+                                                        upgrade
+                                                        spec {
+                                                            ... on Diablo4Skill {
+                                                                name
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                specialization {
+                                                    ... on Diablo4Skill {
+                                                        name
+                                                    }
+                                                }
+                                                expertise {
+                                                    ... on Diablo4Skill {
+                                                        name
+                                                    }
+                                                }
+                                                enchantments {
+                                                    ... on Diablo4Skill {
+                                                        name
+                                                    }
+                                                }
+                                                paragonBoards {
+                                                    ... on Diablo4BuildParagonBoard {
+                                                        board {
+                                                            ... on Diablo4ParagonBoard {
+                                                                name
+                                                            }
+                                                        }
+                                                        glyph {
+                                                            ... on Diablo4ParagonGlyph {
+                                                                name
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -283,10 +243,10 @@ async function fetchData(pageNumber = 1) {
         }
       `,
       variables: {
-        perPage: 10,
-        filter: { seasons: ["season"], archived: false },
+        perPage: 20,
+        filter: {  },
         page: pageNumber,
-        sort: "IS_FEATURED"
+        // sort: "IS_FEATURED"
       }
     });
 
@@ -301,9 +261,16 @@ async function fetchData(pageNumber = 1) {
     if (pageInfo?.hasNextPage) {
       await fetchData(pageNumber + 1);
     } else {
-      console.log(allData);
+      let data = []
+      allData.map(i => {
+        if (i.tier != null) {
+          data.push(i);
+        }
+      })
 
-      return allData;
+      console.log(data);
+
+      return data;
     }
   } catch (error) {
     console.error(error);
@@ -314,26 +281,71 @@ function prepareData(data) {
   let build = data.build
 
   return {
-    build_url: data.id,
+    build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
-    class: JSON.stringify(data.class),
-    tier: JSON.stringify(data.tier),
-    tags: JSON.stringify(build.tags),
+    class: data.class,
+    tier: data.tier,
+    tags: build.tags,
     summary: build.buildSummary,
     core_skills: JSON.stringify(build?.variants[0]?.assignedSkills),
     selected_skills: JSON.stringify(build?.variants[0]?.skills),
-    gear: JSON.stringify(build?.variants[0]?.gear),
-    gems: JSON.stringify(build?.variants[0]?.gems),
+    gear: prepareGear(build?.variants[0]?.gear),
+    gems: prepareGems(build?.variants[0]?.gems),
     seasonal_mechanic: data?.season?.seasonMechanics,
-    creator: JSON.stringify(build.author),
+    creator: build.author,
     last_updated: build.updatedAt,
+    leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
+    class_mechanic: prepareClassMechanic(build?.variants),
+    skill_rotation: build.gameplayLoop,
+    paragon: JSON.stringify(build?.variants[0]?.paragonBoards),
 
     str_and_weak: null,
-    leveling_path: null,
-    class_mechanic: null,
-    skill_rotation: null,
-    paragon: null,
   };
+}
+
+function prepareLevelingPath(data) {
+  const res = []
+
+  if (data != null) {
+    data.map(i => {
+      res.push({name: i?.skill?.slug, maxRank: i?.skill?.maxRank});
+    })
+  }
+
+  return JSON.stringify(res);
+}
+
+function prepareGear(data) {
+  const res = []
+
+  return JSON.stringify(data);
+}
+function prepareGems(data) {
+  const res = []
+
+  return JSON.stringify(data);
+}
+
+function prepareClassMechanic(data) {
+  const res = []
+
+  if (data[0].boons) {
+    res.push(data[0].boons)
+  }
+  if (data[0].summons) {
+    res.push(data[0].summons)
+  }
+  if (data[0].specialization) {
+    res.push(data[0].specialization)
+  }
+  if (data[0].expertise) {
+    res.push(data[0].expertise)
+  }
+  if (data[0].enchantments) {
+    res.push(data[0].enchantments)
+  }
+
+  return JSON.stringify(res);
 }
 
 await fetchData();
