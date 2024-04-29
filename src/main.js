@@ -302,6 +302,8 @@ async function fetchData(pageNumber = 1) {
       await fetchData(pageNumber + 1);
     } else {
       console.log(allData);
+
+      return allData;
     }
   } catch (error) {
     console.error(error);
@@ -336,6 +338,8 @@ function prepareData(data) {
 
 await fetchData();
 
+// Save headings to Dataset - a table-like storage.
+await Actor.pushData(allData);
 
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 await Actor.exit();
