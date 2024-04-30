@@ -239,22 +239,20 @@ async function fetchData(pageNumber = 1) {
 
     if (metaBuildVariants.length > 0) {
       let data = metaBuildVariants.map(v => prepareData(v));
-      allData.push(...data);
+
+      data.map(i => {
+        if (i.tier !== 'null') {
+          allData.push(i);
+        }
+      });
     }
 
     if (pageInfo?.hasNextPage) {
       await fetchData(pageNumber + 1);
     } else {
-      let data = []
-      allData.map(i => {
-        if (i.tier !== 'null') {
-          data.push(i);
-        }
-      })
+      console.log(allData);
 
-      console.log(data);
-
-      return data;
+      return allData;
     }
   } catch (error) {
     console.error(error);
