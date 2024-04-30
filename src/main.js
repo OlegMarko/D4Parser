@@ -46,7 +46,6 @@ async function fetchData(pageNumber = 1) {
                                     ... on Diablo4Season {
                                         id
                                         name
-                                        seasonMechanics
                                     }
                                 }
                                 build {
@@ -70,6 +69,29 @@ async function fetchData(pageNumber = 1) {
                                         variants {
                                             ... on Diablo4Variant {
                                                 name
+                                                seneschalCompanion {
+                                                    ... on Diablo4BuildSeneschalCompanion {
+                                                        governingStone {
+                                                            ... on Diablo4BuildGoverningStone {
+                                                                governingStone {
+                                                                    ... on Diablo4GoverningStone {
+                                                                        name
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        tuningStones {
+                                                            ... on Diablo4BuildTuningStone {
+                                                                position
+                                                                tuningStone {
+                                                                    ... on Diablo4TuningStone {
+                                                                        name
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                                 assignedSkills {
                                                     ... on Diablo4AssignedSkill {
                                                         skill {
@@ -86,6 +108,7 @@ async function fetchData(pageNumber = 1) {
                                                             name
                                                             slug
                                                             maxRank
+                                                            sectionSlug
                                                         }
                                                     }
                                                 }
@@ -240,26 +263,26 @@ async function fetchData(pageNumber = 1) {
 
 function prepareData(data) {
   let build = data.build
+  let variants = build?.variants[0];
 
   return {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
     class: JSON.stringify(data.class),
     tier: JSON.stringify(data.tier),
-    tags: JSON.stringify(build.tags),
+    tags: prepareTags(data.season, data.types),
     summary: build.buildSummary,
-    core_skills: prepareCoreSkills(build?.variants[0]?.assignedSkills),
-    selected_skills: prepareSelectedSkills(build?.variants[0]?.skills),
-    gear: prepareGear(build?.variants[0]?.gear),
-    gems: prepareGems(build?.variants[0]?.gems),
-    seasonal_mechanic: JSON.stringify(data?.season?.seasonMechanics),
+    core_skills: prepareCoreSkills(variants?.assignedSkills),
+    selected_skills: prepareSelectedSkills(variants?.skills),
+    gear: prepareGear(variants?.gear),
+    gems: prepareGems(variants?.gems),
+    seasonal_mechanic: prepareSeasonalMechanic(variants?.seneschalCompanion),
     creator: prepareCreator(build.author),
     last_updated: build.updatedAt,
-    leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
+    leveling_path: prepareLevelingPath(variants?.skills),
     class_mechanic: prepareClassMechanic(build?.variants),
     skill_rotation: build.gameplayLoop,
-    paragon: prepareParagon(build?.variants[0]?.paragonBoards),
-
+    paragon: prepareParagon(variants?.paragonBoards),
     str_and_weak: null,
   };
 }
@@ -268,8 +291,8 @@ function prepareLevelingPath(data) {
   const res = []
 
   if (data != null) {
-    data.map(i => {
-      res.push({name: i?.skill?.slug, maxRank: i?.skill?.maxRank});
+    data.forEach((i, key) => {
+      res.push({ [key + 2]: i?.skill?.slug });
     })
   }
 
@@ -287,10 +310,38 @@ function prepareCoreSkills(data) {
 }
 
 function prepareSelectedSkills(data) {
+  const res = {};
+
+  data?.forEach(i => {
+    if (i.skill.maxRank > 0) {
+      let sectionSlug = i.skill.sectionSlug;
+      if (!res[sectionSlug]) {
+        res[sectionSlug] = [];
+      }
+      if (!res[sectionSlug].includes(i.skill.slug)) {
+        res[sectionSlug].push(i.skill.slug);
+      }
+    }
+  });
+
+  return JSON.stringify(res);
+}
+
+function prepareTags(season, types) {
+  return JSON.stringify([
+    season?.name,
+    ...types.map(i => i.name)
+  ]);
+}
+
+function prepareSeasonalMechanic(data) {
   const res = []
 
   data?.map(i => {
-    res.push(i.skill)
+    res.push({
+      governingStone: i.governingStone?.governingStone?.name,
+      tuningStones: i.tuningStones?.map(v => v?.tuningStone?.name),
+    })
   });
 
   return JSON.stringify(res);
