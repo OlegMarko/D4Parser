@@ -53,13 +53,6 @@ async function fetchData(pageNumber = 1) {
                                     ... on Diablo4CustomBuildV3 {
                                         id
                                         name
-                                        season {
-                                            ... on Diablo4Season {
-                                                id
-                                                name
-                                                seasonMechanics
-                                            }
-                                        }
                                         tags
                                         author {
                                             ... on Diablo4CustomAuthor {
