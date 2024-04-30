@@ -231,7 +231,7 @@ async function fetchData(pageNumber = 1) {
     } else {
       let data = []
       allData.map(i => {
-        if (i.tier != 'null') {
+        if (i.tier !== 'null') {
           data.push(i);
         }
       })
