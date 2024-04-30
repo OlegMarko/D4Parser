@@ -32,14 +32,12 @@ async function fetchData(pageNumber = 1) {
                                 }
                                 tier {
                                     ... on Diablo4Tier {
-                                        id
                                         name
                                         slug
                                     }
                                 }
                                 class {
                                     ... on Diablo4Class {
-                                        id
                                         name
                                         slug
                                     }
@@ -55,32 +53,11 @@ async function fetchData(pageNumber = 1) {
                                     ... on Diablo4CustomBuildV3 {
                                         id
                                         name
-                                        class {
-                                            ... on Diablo4Class {
-                                                id
-                                                slug
-                                                name
-                                            }
-                                        }
-                                        tier {
-                                            ... on Diablo4Tier {
-                                                id
-                                                name
-                                                slug
-                                            }
-                                        }
                                         season {
                                             ... on Diablo4Season {
                                                 id
                                                 name
                                                 seasonMechanics
-                                            }
-                                        }
-                                        class {
-                                            ... on Diablo4Class {
-                                                id
-                                                slug
-                                                name
                                             }
                                         }
                                         tags
@@ -102,10 +79,8 @@ async function fetchData(pageNumber = 1) {
                                                 name
                                                 assignedSkills {
                                                     ... on Diablo4AssignedSkill {
-                                                        position
                                                         skill {
                                                             ... on Diablo4Skill {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
@@ -113,10 +88,8 @@ async function fetchData(pageNumber = 1) {
                                                     }
                                                 }
                                                 skills {
-                                                    actionType
                                                     skill {
                                                         ... on Diablo4Skill {
-                                                            id
                                                             name
                                                             slug
                                                             maxRank
@@ -127,14 +100,12 @@ async function fetchData(pageNumber = 1) {
                                                     ... on Diablo4BuildSlottedGem {
                                                         slot {
                                                             ... on Diablo4GemType {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
                                                         }
                                                         gem {
                                                             ... on Diablo4Gem {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
@@ -145,28 +116,24 @@ async function fetchData(pageNumber = 1) {
                                                     ... on Diablo4Gear {
                                                         slot {
                                                             ... on Diablo4BuildSlot {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
                                                         }
                                                         aspect {
                                                             ... on Diablo4Aspect {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
                                                         }
                                                         stats {
                                                             ... on Diablo4Stat {
-                                                                id
                                                                 name
                                                                 slug
                                                             }
                                                         }
                                                         item {
                                                             ... on Diablo4UniqueItem {
-                                                                id
                                                                 slug
                                                                 name
                                                             }
@@ -269,7 +236,7 @@ async function fetchData(pageNumber = 1) {
         }
       })
 
-      console.log(data);
+      console.log(data[0]);
 
       return data;
     }
@@ -284,21 +251,21 @@ function prepareData(data) {
   return {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
-    class: JSON.stringify(data.class),
-    tier: JSON.stringify(data.tier),
-    tags: JSON.stringify(build.tags),
+    class: data.class,
+    tier: data.tier,
+    tags: build.tags,
     summary: build.buildSummary,
-    core_skills: JSON.stringify(build?.variants[0]?.assignedSkills),
-    selected_skills: JSON.stringify(build?.variants[0]?.skills),
+    core_skills: prepareCoreSkills(build?.variants[0]?.assignedSkills),
+    selected_skills: prepareSelectedSkills(build?.variants[0]?.skills),
     gear: prepareGear(build?.variants[0]?.gear),
     gems: prepareGems(build?.variants[0]?.gems),
-    seasonal_mechanic: JSON.stringify(data?.season?.seasonMechanics),
+    seasonal_mechanic: data?.season?.seasonMechanics,
     creator: prepareCreator(build.author),
     last_updated: build.updatedAt,
     leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
     class_mechanic: prepareClassMechanic(build?.variants),
     skill_rotation: build.gameplayLoop,
-    paragon: JSON.stringify(build?.variants[0]?.paragonBoards),
+    paragon: prepareParagon(build?.variants[0]?.paragonBoards),
 
     str_and_weak: null,
   };
@@ -313,24 +280,42 @@ function prepareLevelingPath(data) {
     })
   }
 
-  return JSON.stringify(res);
+  return res;
+}
+
+function prepareCoreSkills(data) {
+  const res = []
+
+  data.map(i => {
+    res.push(i.skill)
+  });
+
+  return res;
+}
+
+function prepareSelectedSkills(data) {
+  const res = []
+
+  data?.map(i => {
+    res.push(i.skill)
+  });
+
+  return res;
+}
+
+function prepareParagon(data) {
+  return data;
 }
 
 function prepareCreator(data) {
-  const res = []
-
-  return JSON.stringify(data);
+  return data;
 }
 
 function prepareGear(data) {
-  const res = []
-
-  return JSON.stringify(data);
+  return data;
 }
 function prepareGems(data) {
-  const res = []
-
-  return JSON.stringify(data);
+  return data;
 }
 
 function prepareClassMechanic(data) {
@@ -352,7 +337,7 @@ function prepareClassMechanic(data) {
     res.push(data[0].enchantments)
   }
 
-  return JSON.stringify(res);
+  return res;
 }
 
 await fetchData();
