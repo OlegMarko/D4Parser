@@ -231,7 +231,7 @@ async function fetchData(pageNumber = 1) {
     } else {
       let data = []
       allData.map(i => {
-        if (i.tier != null) {
+        if (i.tier != 'null') {
           data.push(i);
         }
       })
@@ -251,15 +251,15 @@ function prepareData(data) {
   return {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
     build_name: build.name,
-    class: data.class,
-    tier: data.tier,
-    tags: build.tags,
+    class: JSON.stringify(data.class),
+    tier: JSON.stringify(data.tier),
+    tags: JSON.stringify(build.tags),
     summary: build.buildSummary,
     core_skills: prepareCoreSkills(build?.variants[0]?.assignedSkills),
     selected_skills: prepareSelectedSkills(build?.variants[0]?.skills),
     gear: prepareGear(build?.variants[0]?.gear),
     gems: prepareGems(build?.variants[0]?.gems),
-    seasonal_mechanic: data?.season?.seasonMechanics,
+    seasonal_mechanic: JSON.stringify(data?.season?.seasonMechanics),
     creator: prepareCreator(build.author),
     last_updated: build.updatedAt,
     leveling_path: prepareLevelingPath(build?.variants[0]?.skills),
@@ -280,7 +280,7 @@ function prepareLevelingPath(data) {
     })
   }
 
-  return res;
+  return JSON.stringify(res);
 }
 
 function prepareCoreSkills(data) {
@@ -290,7 +290,7 @@ function prepareCoreSkills(data) {
     res.push(i.skill)
   });
 
-  return res;
+  return JSON.stringify(res);
 }
 
 function prepareSelectedSkills(data) {
@@ -300,22 +300,22 @@ function prepareSelectedSkills(data) {
     res.push(i.skill)
   });
 
-  return res;
+  return JSON.stringify(res);
 }
 
 function prepareParagon(data) {
-  return data;
+  return JSON.stringify(data);
 }
 
 function prepareCreator(data) {
-  return data;
+  return JSON.stringify(data);
 }
 
 function prepareGear(data) {
-  return data;
+  return JSON.stringify(data);
 }
 function prepareGems(data) {
-  return data;
+  return JSON.stringify(data);
 }
 
 function prepareClassMechanic(data) {
@@ -337,7 +337,7 @@ function prepareClassMechanic(data) {
     res.push(data[0].enchantments)
   }
 
-  return res;
+  return JSON.stringify(res);
 }
 
 await fetchData();
