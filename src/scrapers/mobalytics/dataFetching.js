@@ -93,12 +93,15 @@ export async function fetchData() {
                                                         }
                                                     }
                                                     skills {
-                                                        skill {
-                                                            ... on Diablo4Skill {
-                                                                name
-                                                                slug
-                                                                maxRank
-                                                                sectionSlug
+                                                        ... on Diablo4LeveledSkill {
+                                                            actionType
+                                                            skill {
+                                                                ... on Diablo4Skill {
+                                                                    name
+                                                                    slug
+                                                                    maxRank
+                                                                    sectionSlug
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -184,14 +187,17 @@ export async function fetchData() {
                                                     }
                                                     paragonBoards {
                                                         ... on Diablo4BuildParagonBoard {
+                                                            glyphLevel
                                                             board {
                                                                 ... on Diablo4ParagonBoard {
                                                                     name
+                                                                    slug
                                                                 }
                                                             }
                                                             glyph {
                                                                 ... on Diablo4ParagonGlyph {
                                                                     name
+                                                                    slug
                                                                 }
                                                             }
                                                         }

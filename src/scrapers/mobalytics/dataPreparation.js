@@ -4,9 +4,10 @@ export function prepareData(data) {
 
   return {
     build_url: `https://mobalytics.gg/diablo-4/builds/${data.class.slug}/${data.id}`,
-    build_name: build.name,
-    class: JSON.stringify(data.class),
-    tier: JSON.stringify(data.tier),
+    name: build.name,
+    slug: data.id,
+    class: prepareClass(data.class),
+    tier: prepareTier(data.tier),
     tags: prepareTags(data.season, data.types),
     summary: build.buildSummary,
     core_skills: prepareCoreSkills(variants?.assignedSkills),
@@ -29,7 +30,14 @@ function prepareLevelingPath(data) {
 
   if (data != null) {
     data.forEach((i, key) => {
-      res.push({ [key + 2]: i?.skill?.slug });
+      res.push({
+        level: key + 2,
+        choice: {
+          action: i.actionType,
+          name: i.skill.name,
+          skill: i.skill.slug
+        }
+      });
     })
   }
 
@@ -40,12 +48,44 @@ function prepareCoreSkills(data) {
   const res = []
 
   data.map(i => {
-    res.push(i.skill)
+    res.push({name: i.skill.name, slug: i.skill.slug})
   });
 
   return JSON.stringify(res);
 }
 
+// selected_skills {
+//   skill_group {
+//     data {
+//       attributes {
+//         name
+//         slug
+//         display_name
+//       }
+//     }
+//   }
+//   active_skills {
+//     skill {
+//       data {
+//         attributes {
+//           name
+//           slug
+//           icon
+//           type {
+//             data {
+//               attributes {
+//                 name
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//     rank
+//     upgrade_one
+//     upgrade_two
+//   }
+// }
 function prepareSelectedSkills(data) {
   const res = {};
 
@@ -65,10 +105,19 @@ function prepareSelectedSkills(data) {
 }
 
 function prepareTags(season, types) {
-  return JSON.stringify([
-    season?.name,
-    ...types.map(i => i.name)
-  ]);
+  const res = []
+
+  if (season) {
+    res.push({name: season.name, slug: season.id});
+  }
+
+  if (types) {
+    res.push(...types.map(i => {
+      return {name: i.name, slug: i.id}
+    }))
+  }
+
+  return JSON.stringify(res)
 }
 
 function prepareSeasonalMechanic(data) {
@@ -84,8 +133,31 @@ function prepareSeasonalMechanic(data) {
   return JSON.stringify(res);
 }
 
+function prepareClass(data) {
+  return JSON.stringify(
+    {name: data.name, slug: data.slug}
+  );
+}
+
+function prepareTier(data) {
+  return JSON.stringify(
+    {name: data.name, slug: data.slug}
+  );
+}
+
 function prepareParagon(data) {
-  return JSON.stringify(data);
+  const res = []
+
+  data?.forEach((i, key) => {
+    if (i.board || i.glyph) {
+      res.push({
+        board: i.board,
+        glyph: i.glyph
+      })
+    }
+  });
+
+  return JSON.stringify(res);
 }
 
 function prepareCreator(data) {
