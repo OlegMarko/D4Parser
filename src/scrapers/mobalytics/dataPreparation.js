@@ -54,29 +54,65 @@ function prepareCoreSkills(data) {
   return JSON.stringify(res);
 }
 
-function prepareSelectedSkills(data) {
-  const res = [];
+function findGroupKey(grouped, slug) {
+  // Check existing keys to find the most specific match for grouping
+  const possibleKeys = Object.keys(grouped).filter(key => slug.startsWith(key));
+  if (possibleKeys.length > 0) {
+    // Find the shortest key that matches, indicating the most specific grouping possible
+    return possibleKeys.reduce((a, b) => a.length < b.length ? a : b);
+  }
+  return slug; // If no matching key, use current slug as the group key
+}
 
-  data?.map(i => {
-    if (i.skill.maxRank > 0) {
-      res.push({
-        skill_group: {
-          name: i.skill.section.name,
-          slug: i.skill.section.slug,
-        },
-        active_skills: {
-          name: i.skill.name,
-          slug: i.skill.slug,
-          type: {
-            name: i.skill.type.name
-          }
-        },
-        rank: i.skill.maxRank,
-        upgrade_one: null,
-        upgrade_two: null
-      })
+function prepareSelectedSkills(data) {
+  let res = [];
+  let uniqueData = [];
+  let seenSlugs = new Set();
+
+  data?.forEach(item => {
+    if (!seenSlugs.has(item.skill.slug)) {
+      seenSlugs.add(item.skill.slug);
+      uniqueData.push(item);
     }
   });
+
+  let grouped = {};
+
+  uniqueData.forEach(item => {
+    const slug = item.skill.slug;
+    const groupKey = findGroupKey(grouped, slug);
+
+    // Ensure the group key exists in the dictionary
+    if (!grouped[groupKey]) {
+      grouped[groupKey] = [];
+    }
+
+    // Add the item under the identified group key
+    grouped[groupKey].push(item);
+  });
+
+  for (const [key, group] of Object.entries(grouped)) {
+    let mainSkill = group[0]?.skill
+
+    if (mainSkill?.maxRank > 0) {
+      res.push({
+        skill_group: {
+          name: mainSkill.section.name,
+          slug: mainSkill.section.slug,
+        },
+        active_skills: {
+          name: mainSkill.name,
+          slug: mainSkill.slug,
+          type: {
+            name: mainSkill.type.name
+          }
+        },
+        rank: mainSkill.maxRank,
+        upgrade_one: group[1]?.skill,
+        upgrade_two: group[2]?.skill
+      })
+    }
+  }
 
   return JSON.stringify(res);
 }
