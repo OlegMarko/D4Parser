@@ -72,8 +72,8 @@ function prepareSelectedSkills(data) {
           }
         },
         rank: i.skill.maxRank,
-        upgrade_one: '',
-        upgrade_two: ''
+        upgrade_one: null,
+        upgrade_two: null
       })
     }
   });
