@@ -100,7 +100,17 @@ export async function fetchData() {
                                                                     name
                                                                     slug
                                                                     maxRank
-                                                                    sectionSlug
+                                                                    type {
+                                                                        ... on Diablo4SkillType {
+                                                                            name
+                                                                        }
+                                                                    }
+                                                                    section {
+                                                                        ... on Diablo4SkillSection {
+                                                                            name
+                                                                            slug
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }

@@ -54,50 +54,27 @@ function prepareCoreSkills(data) {
   return JSON.stringify(res);
 }
 
-// selected_skills {
-//   skill_group {
-//     data {
-//       attributes {
-//         name
-//         slug
-//         display_name
-//       }
-//     }
-//   }
-//   active_skills {
-//     skill {
-//       data {
-//         attributes {
-//           name
-//           slug
-//           icon
-//           type {
-//             data {
-//               attributes {
-//                 name
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//     rank
-//     upgrade_one
-//     upgrade_two
-//   }
-// }
 function prepareSelectedSkills(data) {
-  const res = {};
+  const res = [];
 
-  data?.forEach(i => {
+  data?.map(i => {
     if (i.skill.maxRank > 0) {
-      let sectionSlug = i.skill.sectionSlug;
-      if (!res[sectionSlug]) {
-        res[sectionSlug] = [];
-      }
-      if (!res[sectionSlug].includes(i.skill.slug)) {
-        res[sectionSlug].push(i.skill.slug);
-      }
+      res.push({
+        skill_group: {
+          name: i.skill.section.name,
+          slug: i.skill.section.slug,
+        },
+        active_skills: {
+          name: i.skill.name,
+          slug: i.skill.slug,
+          type: {
+            name: i.skill.type.name
+          }
+        },
+        rank: i.skill.maxRank,
+        upgrade_one: '',
+        upgrade_two: ''
+      })
     }
   });
 
@@ -175,7 +152,11 @@ function prepareClassMechanic(data) {
   const res = []
 
   if (data[0].boons) {
-    res.push(data[0].boons)
+    data[0].boons?.map(i => {
+      if (i.value) {
+        res.push(i)
+      }
+    })
   }
   if (data[0].summons) {
     res.push(data[0].summons)
